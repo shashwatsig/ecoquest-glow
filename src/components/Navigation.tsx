@@ -36,8 +36,8 @@ const Navigation = () => {
                 <Link key={item.name} to={item.path}>
                   <Button
                     variant={isActive(item.path) ? "default" : "ghost"}
-                    className={`glass-button flex items-center space-x-2 ${
-                      isActive(item.path) ? 'glow-primary' : ''
+                    className={`glass-button flex items-center space-x-2 text-foreground hover:text-white ${
+                      isActive(item.path) ? 'glow-primary text-white' : ''
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -46,6 +46,15 @@ const Navigation = () => {
                 </Link>
               );
             })}
+            
+            <div className="flex items-center space-x-2 ml-4">
+              <Button variant="ghost" className="glass-button text-foreground hover:text-white">
+                Sign In
+              </Button>
+              <Button className="glass-button glow-primary text-white hover:text-white">
+                Get Started
+              </Button>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}

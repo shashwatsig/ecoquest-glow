@@ -57,27 +57,21 @@ const LandingPage = () => {
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               <span className="gradient-text">Transform Your Impact</span>
               <br />
-              <span className="text-foreground">Save Our Planet</span>
+              <span className="text-white drop-shadow-lg">Save Our Planet</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed drop-shadow-md">
               Join the gamified environmental movement. Complete challenges, 
               earn badges, and make a real difference for our planet's future.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/dashboard">
-                <Button size="lg" className="glass-button glow-primary group px-8 py-6 text-lg">
-                  Start Your Journey
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="glass-button border-secondary/30 text-secondary hover:glow-secondary px-8 py-6 text-lg"
-              >
-                Learn More
+              <Button size="lg" className="glass-button glow-primary group px-8 py-6 text-lg text-white hover:text-white">
+                Get Started Free
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <Button size="lg" className="glass-button border-white/30 text-white hover:bg-white/20 hover:glow-secondary px-8 py-6 text-lg backdrop-blur-md">
+                Sign In
               </Button>
             </div>
           </div>
@@ -91,7 +85,7 @@ const LandingPage = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">
               Your Environmental Adventure Awaits
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-foreground/80 max-w-2xl mx-auto">
               Discover how EcoQuest makes environmental action fun, engaging, and rewarding
             </p>
           </div>
@@ -104,10 +98,10 @@ const LandingPage = () => {
                   <div className={`w-12 h-12 rounded-xl bg-${feature.color}/20 backdrop-blur-lg border border-${feature.color}/30 flex items-center justify-center mb-6 group-hover:glow-${feature.color} transition-all`}>
                     <Icon className={`w-6 h-6 text-${feature.color}`} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-foreground">
+                  <h3 className="text-xl font-semibold mb-3 text-white">
                     {feature.title}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-white/80 leading-relaxed">
                     {feature.description}
                   </p>
                 </Card>
@@ -124,7 +118,7 @@ const LandingPage = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               <span className="gradient-text">Making Real Impact</span>
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-foreground/80">
               Together, we're building a sustainable future
             </p>
           </div>
@@ -139,7 +133,7 @@ const LandingPage = () => {
                     <div className="text-4xl md:text-5xl font-bold mb-2 gradient-text">
                       {stat.number}
                     </div>
-                    <div className="text-muted-foreground text-lg">
+                    <div className="text-foreground/70 text-lg">
                       {stat.label}
                     </div>
                   </div>
@@ -157,15 +151,18 @@ const LandingPage = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Ready to <span className="gradient-text">Change the World?</span>
             </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-foreground/80 mb-8 max-w-2xl mx-auto">
               Every small action counts. Start your environmental journey today and 
               become part of a community that's making a real difference.
             </p>
-            <Link to="/dashboard">
-              <Button size="lg" className="glass-button glow-primary px-12 py-6 text-lg">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="glass-button glow-primary px-12 py-6 text-lg text-white hover:text-white">
                 Join EcoQuest Now
               </Button>
-            </Link>
+              <Button variant="outline" size="lg" className="glass-button border-white/30 text-foreground hover:bg-white/10 px-12 py-6 text-lg">
+                Watch Demo
+              </Button>
+            </div>
           </div>
         </div>
       </section>
