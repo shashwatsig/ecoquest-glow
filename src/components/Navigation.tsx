@@ -48,12 +48,16 @@ const Navigation = () => {
             })}
             
             <div className="flex items-center space-x-2 ml-4">
-              <Button variant="ghost" className="glass-button text-foreground hover:text-white">
-                Sign In
-              </Button>
-              <Button className="glass-button glow-primary text-white hover:text-white">
-                Get Started
-              </Button>
+              <Link to="/auth">
+                <Button variant="ghost" className="glass-button text-foreground hover:text-white">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button className="glass-button glow-primary text-white hover:text-white">
+                  Get Started
+                </Button>
+              </Link>
             </div>
           </div>
 
