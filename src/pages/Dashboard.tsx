@@ -14,15 +14,19 @@ import {
   Calendar,
   Star
 } from 'lucide-react';
+import { useUserData } from '@/hooks/useUserData';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
+  const { userData } = useUserData();
+  
   const userStats = {
-    level: 15,
-    xp: 2340,
-    nextLevelXp: 3000,
-    totalChallenges: 47,
-    weeklyStreak: 12,
-    co2Saved: 234.5
+    level: userData.level,
+    xp: userData.points,
+    nextLevelXp: userData.level * 1000, // Next level at level * 1000 points
+    totalChallenges: userData.completedChallenges.length,
+    weeklyStreak: userData.streakCount,
+    co2Saved: userData.totalCO2Saved
   };
 
   const recentChallenges = [
@@ -187,18 +191,24 @@ const Dashboard = () => {
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full glass-button glow-primary">
-                  <Target className="w-4 h-4 mr-2" />
-                  Browse Challenges
-                </Button>
-                <Button variant="outline" className="w-full glass-button border-secondary/30 text-secondary hover:glow-secondary">
-                  <Trophy className="w-4 h-4 mr-2" />
-                  View Leaderboard
-                </Button>
-                <Button variant="outline" className="w-full glass-button border-accent/30 text-accent hover:glow-accent">
-                  <Award className="w-4 h-4 mr-2" />
-                  My Badges
-                </Button>
+                <Link to="/challenges">
+                  <Button className="w-full glass-button glow-primary">
+                    <Target className="w-4 h-4 mr-2" />
+                    Browse Challenges
+                  </Button>
+                </Link>
+                <Link to="/leaderboard">
+                  <Button variant="outline" className="w-full glass-button border-secondary/30 text-secondary hover:glow-secondary">
+                    <Trophy className="w-4 h-4 mr-2" />
+                    View Leaderboard
+                  </Button>
+                </Link>
+                <Link to="/badges">
+                  <Button variant="outline" className="w-full glass-button border-accent/30 text-accent hover:glow-accent">
+                    <Award className="w-4 h-4 mr-2" />
+                    My Badges
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 

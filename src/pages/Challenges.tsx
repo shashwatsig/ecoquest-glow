@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ChallengeDetails } from '@/components/ChallengeDetails';
 import { 
   Droplets, 
   Recycle, 
@@ -13,30 +14,37 @@ import {
   ShoppingCart,
   Clock,
   Star,
-  CheckCircle
+  CheckCircle,
+  Users
 } from 'lucide-react';
+import { useUserData } from '@/hooks/useUserData';
 
 const Challenges = () => {
   const [activeTab, setActiveTab] = useState('all');
+  const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
+  const { userData, startChallenge } = useUserData();
 
   const challenges = [
     {
-      id: 1,
+      id: 'water-conservation',
       title: 'Water Conservation Master',
-      description: 'Reduce your water usage by 25% over the next 2 weeks through mindful conservation practices.',
+      description: '6-day challenge with daily unlocking tasks to master water conservation practices.',
       category: 'water',
-      difficulty: 'Medium',
-      duration: '14 days',
-      points: 250,
+      difficulty: 'Special',
+      duration: '6 days',
+      points: 180,
       participants: 1240,
       icon: Droplets,
       color: 'secondary',
-      status: 'available'
+      status: userData.activeChallenges.includes('water-conservation') ? 'in-progress' : 
+              userData.completedChallenges.includes('water-conservation') ? 'completed' : 'available',
+      tasks: 6,
+      impact: { waterSaved: '50L+', co2Saved: '5kg' }
     },
     {
-      id: 2,
+      id: 'zero-waste',
       title: 'Zero Waste Week',
-      description: 'Challenge yourself to produce zero waste for an entire week. Reduce, reuse, and recycle everything!',
+      description: '7-day challenge to achieve zero waste through mindful consumption and creative solutions.',
       category: 'waste',
       difficulty: 'Hard',
       duration: '7 days',
@@ -44,12 +52,15 @@ const Challenges = () => {
       participants: 890,
       icon: Recycle,
       color: 'primary',
-      status: 'in-progress'
+      status: userData.activeChallenges.includes('zero-waste') ? 'in-progress' : 
+              userData.completedChallenges.includes('zero-waste') ? 'completed' : 'available',
+      tasks: 7,
+      impact: { co2Saved: '25kg', wasteSaved: '5kg' }
     },
     {
-      id: 3,
+      id: 'tree-planter',
       title: 'Urban Tree Planter',
-      description: 'Plant or sponsor the planting of 5 trees in your local community this month.',
+      description: '30-day challenge to research, plant, and care for trees in your community.',
       category: 'biodiversity',
       difficulty: 'Easy',
       duration: '30 days',
@@ -57,12 +68,15 @@ const Challenges = () => {
       participants: 2100,
       icon: TreePine,
       color: 'accent',
-      status: 'available'
+      status: userData.activeChallenges.includes('tree-planter') ? 'in-progress' : 
+              userData.completedChallenges.includes('tree-planter') ? 'completed' : 'available',
+      tasks: 6,
+      impact: { co2Saved: '50kg', treesPlanted: '1+' }
     },
     {
-      id: 4,
+      id: 'energy-hero',
       title: 'Energy Efficiency Hero',
-      description: 'Reduce your home energy consumption by 20% using smart practices and monitoring.',
+      description: '21-day challenge to optimize energy usage through smart practices and monitoring.',
       category: 'energy',
       difficulty: 'Medium',
       duration: '21 days',
@@ -70,12 +84,15 @@ const Challenges = () => {
       participants: 1560,
       icon: Zap,
       color: 'primary',
-      status: 'completed'
+      status: userData.activeChallenges.includes('energy-hero') ? 'in-progress' : 
+              userData.completedChallenges.includes('energy-hero') ? 'completed' : 'available',
+      tasks: 7,
+      impact: { co2Saved: '30kg', energySaved: '100kWh' }
     },
     {
-      id: 5,
+      id: 'sustainable-commuter',
       title: 'Sustainable Commuter',
-      description: 'Use eco-friendly transportation (bike, walk, public transport) for all trips this week.',
+      description: '7-day challenge to use eco-friendly transportation and reduce carbon footprint.',
       category: 'transport',
       difficulty: 'Easy',
       duration: '7 days',
@@ -83,12 +100,15 @@ const Challenges = () => {
       participants: 3200,
       icon: Car,
       color: 'secondary',
-      status: 'available'
+      status: userData.activeChallenges.includes('sustainable-commuter') ? 'in-progress' : 
+              userData.completedChallenges.includes('sustainable-commuter') ? 'completed' : 'available',
+      tasks: 7,
+      impact: { co2Saved: '20kg' }
     },
     {
-      id: 6,
+      id: 'green-home',
       title: 'Green Home Makeover',
-      description: 'Implement 10 sustainable practices in your home environment over the next month.',
+      description: '30-day challenge to implement sustainable practices throughout your home.',
       category: 'lifestyle',
       difficulty: 'Medium',
       duration: '30 days',
@@ -96,7 +116,10 @@ const Challenges = () => {
       participants: 780,
       icon: Home,
       color: 'accent',
-      status: 'available'
+      status: userData.activeChallenges.includes('green-home') ? 'in-progress' : 
+              userData.completedChallenges.includes('green-home') ? 'completed' : 'available',
+      tasks: 7,
+      impact: { co2Saved: '40kg', energySaved: '150kWh', waterSaved: '200L' }
     }
   ];
 
@@ -107,6 +130,7 @@ const Challenges = () => {
     { id: 'energy', name: 'Energy Efficiency', icon: Zap },
     { id: 'transport', name: 'Green Transport', icon: Car },
     { id: 'lifestyle', name: 'Sustainable Living', icon: Home },
+    { id: 'biodiversity', name: 'Biodiversity', icon: TreePine },
   ];
 
   const filteredChallenges = activeTab === 'all' 
@@ -133,10 +157,19 @@ const Challenges = () => {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'available': return 'Join Challenge';
+      case 'available': return 'Start Challenge';
       case 'in-progress': return 'Continue';
       case 'completed': return 'Completed';
-      default: return 'Join';
+      default: return 'Start';
+    }
+  };
+
+  const handleChallengeAction = (challenge: any) => {
+    if (challenge.status === 'available') {
+      startChallenge(challenge.id);
+      setSelectedChallenge(challenge.id);
+    } else if (challenge.status === 'in-progress') {
+      setSelectedChallenge(challenge.id);
     }
   };
 
@@ -200,7 +233,7 @@ const Challenges = () => {
                     {challenge.description}
                   </p>
                   
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-2 gap-4 text-sm mb-3">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-muted-foreground" />
                       <span>{challenge.duration}</span>
@@ -212,17 +245,41 @@ const Challenges = () => {
                       </span>
                     </div>
                   </div>
+
+                  {/* Tasks and Impact Info */}
+                  <div className="grid grid-cols-2 gap-4 text-xs mb-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-3 h-3 text-muted-foreground" />
+                      <span>{challenge.tasks} tasks</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-3 h-3 text-muted-foreground" />
+                      <span>{challenge.participants.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  {/* Impact Metrics */}
+                  <div className="text-xs text-accent bg-accent/10 rounded-lg p-2 mb-3">
+                    🌍 Impact: {Object.entries(challenge.impact).map(([key, value]) => 
+                      `${value} ${key.replace(/([A-Z])/g, ' $1').toLowerCase()}`
+                    ).join(', ')}
+                  </div>
                   
                   <div className="flex items-center justify-between pt-2 border-t border-glass-border/20">
-                    <div className="text-sm text-muted-foreground">
-                      {challenge.participants.toLocaleString()} participants
-                    </div>
                     <div className="text-lg font-bold gradient-text">
                       {challenge.points} pts
                     </div>
+                    <Badge 
+                      variant={challenge.status === 'completed' ? 'default' : 'secondary'}
+                      className={`${getStatusColor(challenge.status)}`}
+                    >
+                      {challenge.status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
+                      {challenge.status.charAt(0).toUpperCase() + challenge.status.slice(1).replace('-', ' ')}
+                    </Badge>
                   </div>
                   
                   <Button 
+                    onClick={() => handleChallengeAction(challenge)}
                     className={`w-full glass-button ${
                       challenge.status === 'available' ? 'glow-primary' :
                       challenge.status === 'in-progress' ? 'glow-secondary' : 
@@ -244,6 +301,15 @@ const Challenges = () => {
             Load More Challenges
           </Button>
         </div>
+
+        {/* Challenge Details Modal */}
+        {selectedChallenge && (
+          <ChallengeDetails
+            challengeId={selectedChallenge}
+            isOpen={!!selectedChallenge}
+            onClose={() => setSelectedChallenge(null)}
+          />
+        )}
       </div>
     </div>
   );
