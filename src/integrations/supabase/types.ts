@@ -14,7 +14,296 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      badges: {
+        Row: {
+          created_at: string | null
+          criteria: Json | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          criteria?: Json | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          criteria?: Json | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      challenge_tasks: {
+        Row: {
+          challenge_id: string | null
+          created_at: string | null
+          day_number: number
+          description: string | null
+          education_tip: string | null
+          id: string
+          instructions: string | null
+          points: number
+          proof_type: string | null
+          requires_proof: boolean | null
+          title: string
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string | null
+          day_number: number
+          description?: string | null
+          education_tip?: string | null
+          id?: string
+          instructions?: string | null
+          points: number
+          proof_type?: string | null
+          requires_proof?: boolean | null
+          title: string
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string | null
+          day_number?: number
+          description?: string | null
+          education_tip?: string | null
+          id?: string
+          instructions?: string | null
+          points?: number
+          proof_type?: string | null
+          requires_proof?: boolean | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_tasks_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenges: {
+        Row: {
+          color_theme: string | null
+          created_at: string | null
+          description: string | null
+          difficulty: string | null
+          duration_days: number
+          icon: string | null
+          id: string
+          impact_co2: number | null
+          impact_energy: number | null
+          impact_water: number | null
+          title: string
+          total_points: number
+        }
+        Insert: {
+          color_theme?: string | null
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          duration_days: number
+          icon?: string | null
+          id?: string
+          impact_co2?: number | null
+          impact_energy?: number | null
+          impact_water?: number | null
+          title: string
+          total_points: number
+        }
+        Update: {
+          color_theme?: string | null
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          duration_days?: number
+          icon?: string | null
+          id?: string
+          impact_co2?: number | null
+          impact_energy?: number | null
+          impact_water?: number | null
+          title?: string
+          total_points?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+          level: number | null
+          points: number | null
+          streak_count: number | null
+          student_number: string | null
+          total_co2_saved: number | null
+          total_energy_saved: number | null
+          total_water_saved: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          level?: number | null
+          points?: number | null
+          streak_count?: number | null
+          student_number?: string | null
+          total_co2_saved?: number | null
+          total_energy_saved?: number | null
+          total_water_saved?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          level?: number | null
+          points?: number | null
+          streak_count?: number | null
+          student_number?: string | null
+          total_co2_saved?: number | null
+          total_energy_saved?: number | null
+          total_water_saved?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string | null
+          earned_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          badge_id?: string | null
+          earned_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          badge_id?: string | null
+          earned_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_challenge_tasks: {
+        Row: {
+          completed_at: string | null
+          id: string
+          points_earned: number | null
+          proof_data: Json | null
+          task_id: string | null
+          user_challenge_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          points_earned?: number | null
+          proof_data?: Json | null
+          task_id?: string | null
+          user_challenge_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          points_earned?: number | null
+          proof_data?: Json | null
+          task_id?: string | null
+          user_challenge_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_tasks_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_challenge_tasks_user_challenge_id_fkey"
+            columns: ["user_challenge_id"]
+            isOneToOne: false
+            referencedRelation: "user_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_challenges: {
+        Row: {
+          challenge_id: string | null
+          completed_at: string | null
+          current_day: number | null
+          id: string
+          points_earned: number | null
+          started_at: string | null
+          status: string | null
+          streak_count: number | null
+          user_id: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          completed_at?: string | null
+          current_day?: number | null
+          id?: string
+          points_earned?: number | null
+          started_at?: string | null
+          status?: string | null
+          streak_count?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          completed_at?: string | null
+          current_day?: number | null
+          id?: string
+          points_earned?: number | null
+          started_at?: string | null
+          status?: string | null
+          streak_count?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_challenges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
