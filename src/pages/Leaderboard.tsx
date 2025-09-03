@@ -24,7 +24,9 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const { data, error } = await supabase.rpc('get_leaderboard');
+        const { data, error } = await supabase
+          .from('leaderboard')
+          .select('*');
         if (error) throw error;
         setLeaderboardData(data || []);
       } catch (error) {

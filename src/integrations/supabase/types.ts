@@ -306,7 +306,20 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      leaderboard: {
+        Row: {
+          created_at: string | null
+          display_name: string | null
+          level: number | null
+          points: number | null
+          rank: number | null
+          streak_count: number | null
+          total_co2_saved: number | null
+          total_energy_saved: number | null
+          total_water_saved: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_leaderboard: {
