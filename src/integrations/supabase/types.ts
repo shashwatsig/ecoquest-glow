@@ -306,25 +306,13 @@ export type Database = {
       }
     }
     Views: {
-      leaderboard: {
-        Row: {
-          created_at: string | null
-          display_name: string | null
-          level: number | null
-          points: number | null
-          rank: number | null
-          streak_count: number | null
-          total_co2_saved: number | null
-          total_energy_saved: number | null
-          total_water_saved: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       get_leaderboard: {
         Args: Record<PropertyKey, never>
         Returns: {
+          created_at: string
           display_name: string
           level: number
           points: number

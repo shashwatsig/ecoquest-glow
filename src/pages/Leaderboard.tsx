@@ -25,8 +25,7 @@ const Leaderboard = () => {
     const fetchLeaderboard = async () => {
       try {
         const { data, error } = await supabase
-          .from('leaderboard')
-          .select('*');
+          .rpc('get_leaderboard');
         if (error) throw error;
         setLeaderboardData(data || []);
       } catch (error) {
