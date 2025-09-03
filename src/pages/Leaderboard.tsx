@@ -3,40 +3,68 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Crown, Trophy, Medal, Star, TrendingUp, Calendar, Globe } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
+
+interface LeaderboardEntry {
+  rank: number;
+  points: number;
+  level: number;
+  total_co2_saved: number;
+  total_water_saved: number;
+  total_energy_saved: number;
+  streak_count: number;
+  display_name: string;
+}
 
 const Leaderboard = () => {
-  const weeklyLeaders = [
-    { rank: 1, name: 'Emma Green', points: 1250, avatar: '🌱', level: 18, badge: 'Eco Master', change: '+2' },
-    { rank: 2, name: 'Alex Rivers', points: 1180, avatar: '🌊', level: 16, badge: 'Water Guardian', change: '0' },
-    { rank: 3, name: 'Maya Forest', points: 1120, avatar: '🌳', level: 17, badge: 'Tree Lover', change: '-1' },
-    { rank: 4, name: 'Sam Solar', points: 1080, avatar: '☀️', level: 15, badge: 'Energy Saver', change: '+3' },
-    { rank: 5, name: 'Luna Earth', points: 1050, avatar: '🌍', level: 16, badge: 'Planet Protector', change: '+1' },
-    { rank: 6, name: 'Rio Wind', points: 1020, avatar: '💨', level: 14, badge: 'Air Champion', change: '-2' },
-    { rank: 7, name: 'Sage Ocean', points: 980, avatar: '🐋', level: 15, badge: 'Sea Defender', change: '+1' },
-    { rank: 8, name: 'Ivy Storm', points: 950, avatar: '⚡', level: 13, badge: 'Storm Rider', change: '0' }
-  ];
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const monthlyLeaders = [
-    { rank: 1, name: 'Maya Forest', points: 4850, avatar: '🌳', level: 17, badge: 'Tree Lover', change: '+1' },
-    { rank: 2, name: 'Emma Green', points: 4720, avatar: '🌱', level: 18, badge: 'Eco Master', change: '0' },
-    { rank: 3, name: 'Alex Rivers', points: 4650, avatar: '🌊', level: 16, badge: 'Water Guardian', change: '+2' },
-    { rank: 4, name: 'Sam Solar', points: 4580, avatar: '☀️', level: 15, badge: 'Energy Saver', change: '-1' },
-    { rank: 5, name: 'Luna Earth', points: 4520, avatar: '🌍', level: 16, badge: 'Planet Protector', change: '+3' },
-    { rank: 6, name: 'Rio Wind', points: 4480, avatar: '💨', level: 14, badge: 'Air Champion', change: '-2' },
-    { rank: 7, name: 'Sage Ocean', points: 4420, avatar: '🐋', level: 15, badge: 'Sea Defender', change: '0' },
-    { rank: 8, name: 'Ivy Storm', points: 4380, avatar: '⚡', level: 13, badge: 'Storm Rider', change: '+1' }
-  ];
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const { data, error } = await supabase.rpc('get_leaderboard');
+        if (error) throw error;
+        setLeaderboardData(data || []);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const allTimeLeaders = [
-    { rank: 1, name: 'Emma Green', points: 12450, avatar: '🌱', level: 18, badge: 'Eco Master', change: '0' },
-    { rank: 2, name: 'Maya Forest', points: 11820, avatar: '🌳', level: 17, badge: 'Tree Lover', change: '0' },
-    { rank: 3, name: 'Alex Rivers', points: 11650, avatar: '🌊', level: 16, badge: 'Water Guardian', change: '0' },
-    { rank: 4, name: 'Luna Earth', points: 11580, avatar: '🌍', level: 16, badge: 'Planet Protector', change: '0' },
-    { rank: 5, name: 'Sam Solar', points: 11420, avatar: '☀️', level: 15, badge: 'Energy Saver', change: '0' },
-    { rank: 6, name: 'Rio Wind', points: 11380, avatar: '💨', level: 14, badge: 'Air Champion', change: '0' },
-    { rank: 7, name: 'Sage Ocean', points: 11280, avatar: '🐋', level: 15, badge: 'Sea Defender', change: '0' },
-    { rank: 8, name: 'Ivy Storm', points: 11180, avatar: '⚡', level: 13, badge: 'Storm Rider', change: '0' }
-  ];
+    fetchLeaderboard();
+  }, []);
+
+  // Generate avatars and badges based on user stats
+  const getAvatar = (rank: number) => {
+    const avatars = ['🌱', '🌊', '🌳', '☀️', '🌍', '💨', '🐋', '⚡', '🌿', '🔥'];
+    return avatars[rank % avatars.length];
+  };
+
+  const getBadge = (entry: LeaderboardEntry) => {
+    if (entry.total_co2_saved > 100) return 'CO₂ Hero';
+    if (entry.total_water_saved > 500) return 'Water Guardian';
+    if (entry.total_energy_saved > 200) return 'Energy Master';
+    if (entry.streak_count > 10) return 'Streak Champion';
+    if (entry.level > 15) return 'Eco Master';
+    return 'Eco Warrior';
+  };
+
+  // For demo purposes, we'll use the same data for all tabs
+  // In a real app, you'd filter by time periods
+  const formatLeaderboardData = (data: LeaderboardEntry[]) => {
+    return data.map(entry => ({
+      rank: entry.rank,
+      name: entry.display_name,
+      points: entry.points,
+      avatar: getAvatar(entry.rank),
+      level: entry.level,
+      badge: getBadge(entry),
+      change: '0' // Would need historical data for real changes
+    }));
+  };
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -62,57 +90,92 @@ const Leaderboard = () => {
     return <span className="w-4 h-4 flex items-center justify-center text-muted-foreground">—</span>;
   };
 
-  const renderLeaderboard = (leaders: typeof weeklyLeaders) => (
-    <div className="space-y-3">
-      {leaders.map((leader, index) => (
-        <Card key={leader.rank} className={`glass-card hover:scale-[1.01] transition-all duration-300 ${getRankColor(leader.rank)}`}>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4">
-              {/* Rank */}
-              <div className="flex items-center justify-center w-10 h-10">
-                {getRankIcon(leader.rank)}
-              </div>
+  const currentLeaderboard = formatLeaderboardData(leaderboardData);
 
-              {/* Avatar */}
-              <div className="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-2xl">
-                {leader.avatar}
-              </div>
-
-              {/* User Info */}
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-semibold text-foreground">{leader.name}</h3>
-                  <Badge variant="secondary" className="glass-button text-xs">
-                    Level {leader.level}
-                  </Badge>
+  const renderLeaderboard = () => {
+    if (loading) {
+      return (
+        <div className="space-y-3">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Card key={index} className="glass-card">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-4 animate-pulse">
+                  <div className="w-10 h-10 bg-muted rounded-full"></div>
+                  <div className="w-12 h-12 bg-muted rounded-xl"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-3 bg-muted rounded w-1/2"></div>
+                  </div>
+                  <div className="w-8 h-4 bg-muted rounded"></div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge className="glass-button text-xs border-primary/30 bg-primary/10">
-                    {leader.badge}
-                  </Badge>
-                  <span className="text-sm text-muted-foreground">
-                    {leader.points.toLocaleString()} pts
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      );
+    }
+
+    if (currentLeaderboard.length === 0) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No leaderboard data available yet.</p>
+          <p className="text-sm text-muted-foreground mt-2">Start completing challenges to see rankings!</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-3">
+        {currentLeaderboard.map((leader) => (
+          <Card key={leader.rank} className={`glass-card hover:scale-[1.01] transition-all duration-300 ${getRankColor(leader.rank)}`}>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-4">
+                {/* Rank */}
+                <div className="flex items-center justify-center w-10 h-10">
+                  {getRankIcon(leader.rank)}
+                </div>
+
+                {/* Avatar */}
+                <div className="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-2xl">
+                  {leader.avatar}
+                </div>
+
+                {/* User Info */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-semibold text-foreground">{leader.name}</h3>
+                    <Badge variant="secondary" className="glass-button text-xs">
+                      Level {leader.level}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className="glass-button text-xs border-primary/30 bg-primary/10">
+                      {leader.badge}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      {leader.points.toLocaleString()} pts
+                    </span>
+                  </div>
+                </div>
+
+                {/* Change Indicator */}
+                <div className="flex items-center gap-1">
+                  {getChangeIcon(leader.change)}
+                  <span className={`text-sm font-medium ${
+                    leader.change.includes('+') ? 'text-accent' :
+                    leader.change.includes('-') ? 'text-destructive' :
+                    'text-muted-foreground'
+                  }`}>
+                    {leader.change}
                   </span>
                 </div>
               </div>
-
-              {/* Change Indicator */}
-              <div className="flex items-center gap-1">
-                {getChangeIcon(leader.change)}
-                <span className={`text-sm font-medium ${
-                  leader.change.includes('+') ? 'text-accent' :
-                  leader.change.includes('-') ? 'text-destructive' :
-                  'text-muted-foreground'
-                }`}>
-                  {leader.change}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen pt-20 pb-8">
@@ -193,7 +256,7 @@ const Leaderboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {renderLeaderboard(weeklyLeaders)}
+                {renderLeaderboard()}
               </CardContent>
             </Card>
           </TabsContent>
@@ -207,7 +270,7 @@ const Leaderboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {renderLeaderboard(monthlyLeaders)}
+                {renderLeaderboard()}
               </CardContent>
             </Card>
           </TabsContent>
@@ -221,7 +284,7 @@ const Leaderboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {renderLeaderboard(allTimeLeaders)}
+                {renderLeaderboard()}
               </CardContent>
             </Card>
           </TabsContent>
