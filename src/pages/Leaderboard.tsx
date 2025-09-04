@@ -24,10 +24,13 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
+        console.log('Fetching leaderboard data...');
         const { data, error } = await supabase
           .rpc('get_leaderboard');
+        console.log('Leaderboard response:', { data, error });
         if (error) throw error;
         setLeaderboardData(data || []);
+        console.log('Set leaderboard data:', data);
       } catch (error) {
         console.error('Error fetching leaderboard:', error);
       } finally {
