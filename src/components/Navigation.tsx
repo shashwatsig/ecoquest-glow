@@ -1,11 +1,31 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Leaf, Menu, X, Trophy, Target, Award, User } from 'lucide-react';
+import { Leaf, Menu, X, Trophy, Target, Award, User, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, signOut, loading } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "See you next time!",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error signing out",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: User },
@@ -48,16 +68,31 @@ const Navigation = () => {
             })}
             
             <div className="flex items-center space-x-2 ml-4">
-              <Link to="/auth">
-                <Button variant="ghost" className="glass-button text-foreground hover:text-white">
-                  Sign In
-                </Button>
-              </Link>
-              <Link to="/auth">
-                <Button className="glass-button glow-primary text-white hover:text-white">
-                  Get Started
-                </Button>
-              </Link>
+              {!loading && (
+                isAuthenticated ? (
+                  <Button 
+                    variant="ghost" 
+                    className="glass-button text-foreground hover:text-white flex items-center space-x-2"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </Button>
+                ) : (
+                  <>
+                    <Link to="/auth">
+                      <Button variant="ghost" className="glass-button text-foreground hover:text-white">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link to="/auth">
+                      <Button className="glass-button glow-primary text-white hover:text-white">
+                        Get Started
+                      </Button>
+                    </Link>
+                  </>
+                )
+              )}
             </div>
           </div>
 
